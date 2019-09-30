@@ -37,7 +37,7 @@
         }
         $(function() {
             $('#add-db').dialog({
-                autoOpen:false,
+                autoOpen: false,
             });
             $('#open-db').click(() => {
                 $('#add-db').dialog('open');
@@ -47,14 +47,14 @@
         document.querySelector("#homepage").href = path;
 
         function main(hash) {
-            let _hash = "https://cloudflare-ipfs.com/ipfs/" + hash;
+            let _hash = `https://cloudflare-ipfs.com/ipfs/${hash}`;
             fetch(_hash)
                 .then((res) => {return res.json()})
                 .then((json) => {
                     let Home = {
                         view: function() {
                             document.querySelector("#app").innerHTML = "";
-                            for(let i = json.length-1; i >= 0 && i > json.length - 21; i--) {
+                            for (let i = json.length-1; i >= 0 && i > json.length - 21; i--) {
                                 document.querySelector("#app").innerHTML += `<a href="${path}#!/g/${i+1}"><img src="https://cloudflare-ipfs.com/ipfs/${json[i].pages[0]}" width="250" height="358" /></a>`
                             }
                         }
@@ -64,10 +64,9 @@
                         view: function(vnode) {
                             document.querySelector("#app").innerHTML = "";
                             let g_id = parseInt(vnode.attrs.gallery_id) - 1;
-                            for(let i = 0; i < json[g_id].pages.length; i++) {
-                                document.querySelector("#app").innerHTML += `<a href="${path}#!/g/${g_id}/page/${i+1}"><img src="https://cloudflare-ipfs.com/ipfs/${json[g_id].pages[i]}" width="250" height="358" /></a>`
-                            }
-
+                            document.querySelector("#app").innerHTML += json[g_id].pages.map((page, i) => {
+                                return `<a href="${path}#!/g/${g_id}/page/${i+1}"><img src="https://cloudflare-ipfs.com/ipfs/${page}" width="250" height="358" /></a>`;
+                            }).join('');
                         }
                     }
                     let Page = {
@@ -77,8 +76,8 @@
                             const p_id = vnode.attrs.page_id;
                             let next_page = parseInt(p_id) + 1;
                             let previous_page = parseInt(p_id) - 1;
-                            if(previous_page < 1) previous_page = parseInt(json[g_id-1].pages.length) - 1;
-                            if(next_page > json[g_id-1].pages.length-1) next_page = 1
+                            if (previous_page < 1) previous_page = parseInt(json[g_id-1].pages.length) - 1;
+                            if (next_page > json[g_id-1].pages.length-1) next_page = 1
                             document.querySelector("#app").innerHTML += 
                             `<a href="${path}#!/g/${g_id}/page/${next_page}"><img src="https://cloudflare-ipfs.com/ipfs/${json[g_id-1].pages[p_id-1]}" width="100%" height="100%" /></a><br>` +
                             `<span id="page_nav">` +
